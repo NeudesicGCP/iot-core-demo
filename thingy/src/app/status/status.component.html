@@ -1,0 +1,19 @@
+<mat-card class="status-card">
+  <mat-card-header>
+    <div mat-card-avatar><mat-icon>smartphone</mat-icon></div>
+    <mat-card-title><p class="mat-title">{{ (name | async) || 'Unregistered device'}}</p></mat-card-title>
+    <span class="sensors-fill"></span>
+    <app-sensors-component></app-sensors-component>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-spinner *ngIf="(isBusy | async)"></mat-spinner>
+    <div *ngIf="!(isBusy | async)">
+      <p class="mat-subheading-2">Configuration version: {{ (version | async) }}</p>
+      <pre *ngIf="(config | async) != null">{{ config | async | json }}</pre>
+    </div>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-button *ngIf="!(isRegistered | async)" (click)="register($event)">Register</button>
+    <button mat-button *ngIf="(isRegistered | async)" (click)="reset($event)">Reset</button>
+  </mat-card-actions>
+</mat-card>

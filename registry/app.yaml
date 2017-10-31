@@ -1,0 +1,37 @@
+# Deploys the registration service to GAE
+service: registration
+runtime: go
+api_version: go1
+
+instance_class: F4
+
+env_variables:
+  # 'security' for REST endpoint; incoming requests will need to have header
+  # Authorization: Bearer ${PKI_SERVICE_AUTH_TOKEN}
+  REGISTRATION_SERVICE_AUTH_TOKEN: 'ocgcpDemo'
+  #
+  # Registry settings:-
+  #
+  # Project ID
+  #REGISTRATION_SERVICE_PROJECTID: 'memes-sandbox'
+  # Location of registry
+  #REGISTRATION_SERVICE_LOCATIONID: 'us-central1'
+  # Name of registry
+  #REGISTRATION_SERVICE_REGISTRYID: 'memes-registry'
+  # Device registration key expiration, in format recognised by time.ParseDuration
+  #REGISTRATION_SERVICE_REGISTRY_EXPIRATION: '720h'
+  #
+  # Device certificate settings:-
+  # Certificate expiration, in format recognised by time.ParseDuration
+  #REGISTRATION_SERVICE_CERT_EXPIRATIONL '1440h'
+  # Subject fields for device certificates:
+  #REGISTRATION_SERVICE_CERT_COUNTRY: 'US'
+  #REGISTRATION_SERVICE_CERT_PROVINCE: 'California'
+  #REGISTRATION_SERVICE_CERT_LOCALITY: 'Irvine'
+  #REGISTRATION_SERVICE_CERT_ORG: 'Neudesic'
+  #REGISTRATION_SERVICE_CERT_ORG_UNIT: 'GCP'
+
+handlers:
+  - url: /.*
+    script: _go_app
+    secure: always

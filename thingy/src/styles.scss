@@ -1,0 +1,13 @@
+// Angular Material theming support
+@import '~@angular/material/theming';
+@include mat-core();
+
+// Custom app colours
+$thingy-app-primary: mat-palette($mat-indigo);
+$thingy-app-accent: mat-palette($mat-pink, A200, A100, A400);
+$thingy-app-warn: mat-palette($mat-red);
+
+// Build the theme for the app
+$thingy-app-theme: mat-light-theme($thingy-app-primary, $thingy-app-accent, $thingy-app-warn);
+@include angular-material-theme($thingy-app-theme);
+

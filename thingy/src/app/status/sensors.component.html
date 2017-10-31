@@ -1,0 +1,5 @@
+<mat-icon *ngIf="(positionEnabled | async) && (haveAPosition | async)">my_location</mat-icon>
+<mat-icon *ngIf="(positionEnabled | async) && !(haveAPosition | async)">location_searching</mat-icon>
+<mat-icon *ngIf="!(positionEnabled | async)">location_disabled</mat-icon>
+<mat-icon *ngIf="(haveAnAcceleration | async)">sync</mat-icon>
+<mat-icon *ngIf="!(haveAnAcceleration | async)">sync_disabled</mat-icon>

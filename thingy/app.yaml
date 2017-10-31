@@ -1,0 +1,38 @@
+service: default
+runtime: python27
+api_version: 1
+threadsafe: true
+
+default_expiration: "1d"
+
+skip_files:
+  - ^(?!dist)
+
+handlers:
+  - url: /((?:inline|main|polyfills|styles|vendor)(?:\.[a-z0-9]+)?\.bundle\.js)
+    secure: always
+    redirect_http_response_code: 301
+    static_files: dist/\1
+    upload: dist/.*
+
+  - url: /(styles(?:\.[a-z0-9]+)?\.bundle.css)
+    secure: always
+    redirect_http_response_code: 301
+    static_files: dist/\1
+    upload: dist/.*
+
+  - url: /((?:assets|docs)/.*|favicon\.ico)
+    secure: always
+    redirect_http_response_code: 301
+    static_files: dist/\1
+    upload: dist/.*
+
+  - url: /.*
+    secure: always
+    redirect_http_response_code: 301
+    static_files: dist/index.html
+    upload: dist/index\.html
+    http_headers:
+      Strict-Transport-Security: max-age=31536000; includeSubDomains
+      X-Frame-Options: DENY
+      Access-Control-Allow-Origin: '*'

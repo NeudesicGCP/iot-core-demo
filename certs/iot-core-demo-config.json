@@ -1,0 +1,17 @@
+{
+  "signing": {
+    "default": {
+      "expiry": "240h"
+    },
+    "profiles": {
+      "device": {
+        "usages": [
+          "signing",
+          "key encipherment",
+          "client auth"
+        ],
+        "expiry": "240h"
+      }
+    }
+  }
+}

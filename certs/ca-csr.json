@@ -1,0 +1,16 @@
+{
+  "CN": "IoT Core Demo CA",
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "C": "US",
+      "L": "Irvine",
+      "O": "Neudesic",
+      "OU": "GCP",
+      "ST": "California"
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+# Don't commit any certs or keys, or csr files
+*pem
+*csr
+*-csr.json
+!ca-csr.json
