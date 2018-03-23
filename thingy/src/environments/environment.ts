@@ -7,5 +7,5 @@ export const environment = {
   production: false,
   debug: true,
   registrationAuthToken: 'ocgcpDemo',
-  registrationURL: `https://registration-dot-memes-sandbox.appspot.com/`
+  registrationURL: `https://registration-dot-ocgcp-iot-core.appspot.com/`
 };
