@@ -12,18 +12,18 @@ import (
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
-	iot "google.golang.org/api/cloudiot/v1beta1"
+	iot "google.golang.org/api/cloudiot/v1"
 	"google.golang.org/appengine/log"
 	"google.golang.org/appengine/urlfetch"
 )
 
 const (
 	// Used when constructing the device REST path; provides the host to use for URLs
-	CLOUD_IOT_BASE_URL = "https://cloudiot-device.googleapis.com"
+	CLOUD_IOT_BASE_URL = "https://cloudiotdevice.googleapis.com"
 
 	// Used when constructing the device resource path; should match
 	// the version imported above
-	CLOUD_IOT_API_VERSION = "v1beta1"
+	CLOUD_IOT_API_VERSION = "v1"
 
 	// Load device expiration from environment, but have a sane default
 	REGISTRY_EXPIRATION_ENV_NAME      = "REGISTRATION_SERVICE_REGISTRY_EXPIRATION"
