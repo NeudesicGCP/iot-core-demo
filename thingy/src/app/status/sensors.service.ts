@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/fromEvent';
+import 'rxjs/add/observable/of';
 
 import { WindowService } from '../app.window.service';
 import { Acceleration, buildAcceleration, Position, buildPosition } from './sensors.model';
@@ -18,6 +19,11 @@ const SENSOR_ERROR_GEOLOC_UNKNOWN = 'Unknown Geolocation error';
 @Injectable()
 export class SensorsService {
   private window: any;
+
+  get ua(): Observable<string> {
+    debug('get ua: enter');
+    return Observable.of(this.window.navigator.userAgent);
+  }
 
   get geolocation(): Observable<Position> {
     debug('get geolocation: enter');

@@ -88,8 +88,11 @@ export class StatusComponent implements OnInit, OnDestroy {
         };
       });
     this.telemetrySub = this.sensorsService.acceleration
-      .combineLatest(this.sensorsService.geolocation, (acceleration, position) => {
+      .combineLatest(this.sensorsService.geolocation,
+      this.sensorsService.ua,
+      (acceleration, position, ua) => {
         return {
+          ua: ua,
           position: position,
           acceleration: acceleration
         };
