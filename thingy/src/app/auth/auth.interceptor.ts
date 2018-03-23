@@ -16,7 +16,7 @@ const debug = Debug('thingy:auth.interceptor');
  * 5: action
  */
 // tslint:disable-next-line:max-line-length
-const IOT_PATH_REGEX = /https:\/\/cloudiot-device\.googleapis\.com\/v1beta1\/projects\/([^\/]+)\/locations\/([^\/]+)\/registries\/([^\/]+)\/devices\/([^\/:]+)(.*)/;
+const IOT_PATH_REGEX = /https:\/\/cloudiotdevice\.googleapis\.com\/v1\/projects\/([^\/]+)\/locations\/([^\/]+)\/registries\/([^\/]+)\/devices\/([^\/:]+)(.*)/;
 
 /* AuthInterceptor adds JWT token to all requests that match the URL associated
  * with Cloud IoT Core REST endpoints.
