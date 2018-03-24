@@ -10,11 +10,17 @@ export interface Acceleration {
 export function buildAcceleration(obj: any): Acceleration {
   debug('buildAcceleration: enter, obj = %o', obj);
   let result = null;
+  let data = null;
   if (obj && obj.acceleration) {
+    data = obj.acceleration;
+  } else if (obj && obj.accelerationIncludingGravity) {
+    data = obj.accelerationIncludingGravity;
+  }
+  if (data) {
     result = {
-      x: obj.acceleration.x || 0,
-      y: obj.acceleration.y || 0,
-      z: obj.acceleration.z || 0
+      x: data.x || 0,
+      y: data.y || 0,
+      z: data.z || 0
     };
   }
   debug('buildAcceleration: exit, returning %o', result);

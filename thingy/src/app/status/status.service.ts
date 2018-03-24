@@ -14,6 +14,8 @@ import { Config, IoTConfig, State, Telemetry } from './status.model';
 import * as Debug from 'debug';
 const debug = Debug('thingy:status.service');
 
+const UPDATE_SAMPLE_TIME_MS = 5000;
+
 @Injectable()
 export class StatusService {
   private state_: BehaviorSubject<State>;
@@ -38,7 +40,7 @@ export class StatusService {
       locationError: ''
     };
     this.state_ = new BehaviorSubject<State>(state);
-    this.state_.sampleTime(5000)
+    this.state_.sampleTime(UPDATE_SAMPLE_TIME_MS)
       .filter(sample => this.isRegistered && sample != null)
       .subscribe((sample) => {
         const path = this.authService.currentPath;

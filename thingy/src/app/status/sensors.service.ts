@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/fromEvent';
-import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/sampleTime';
 
 import { WindowService } from '../app.window.service';
 import { Acceleration, buildAcceleration, Position, buildPosition } from './sensors.model';
@@ -9,6 +9,7 @@ import { Acceleration, buildAcceleration, Position, buildPosition } from './sens
 import * as Debug from 'debug';
 const debug = Debug('thingy:sensors.service');
 
+const SENSOR_SAMPLE_TIME_MS = 100;
 const SENSOR_ERROR_UNKNOWN = 'Unknown sensor error';
 const SENSOR_ERROR_GEOLOC_UNSUPPORTED = 'Geolocation is unsupported on this device';
 const SENSOR_ERROR_GEOLOC_PERMISSIONS = 'Geolocation support has been denied';
@@ -19,11 +20,6 @@ const SENSOR_ERROR_GEOLOC_UNKNOWN = 'Unknown Geolocation error';
 @Injectable()
 export class SensorsService {
   private window: any;
-
-  get ua(): Observable<string> {
-    debug('get ua: enter');
-    return Observable.of(this.window.navigator.userAgent);
-  }
 
   get geolocation(): Observable<Position> {
     debug('get geolocation: enter');
@@ -59,7 +55,8 @@ export class SensorsService {
       } else {
         observer.error('Geolocation is unsupported');
       }
-    });
+    })
+      .sampleTime(SENSOR_SAMPLE_TIME_MS);
   }
 
   get acceleration(): Observable<Acceleration> {
@@ -69,13 +66,11 @@ export class SensorsService {
       return Observable.throw(SENSOR_ERROR_UNKNOWN);
     }
     return Observable.fromEvent(this.window, 'devicemotion')
-      .filter((motion: any) => motion && motion.acceleration &&
-        motion.acceleration.x != null &&
-        motion.acceleration.y != null &&
-        motion.acceleration.z != null)
+      .sampleTime(SENSOR_SAMPLE_TIME_MS)
       .map((motion) => {
         return buildAcceleration(motion);
-      });
+      })
+      .filter((motion: any) => motion);
   }
 
   constructor(private windowService: WindowService) {

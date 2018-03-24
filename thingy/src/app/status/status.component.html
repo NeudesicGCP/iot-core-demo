@@ -4,6 +4,8 @@
     <mat-card-title><p class="mat-title">{{ (name | async) || 'Unregistered device'}}</p></mat-card-title>
     <span class="sensors-fill"></span>
     <app-sensors-component></app-sensors-component>
+    <mat-icon *ngIf="!(pingPong | async)">favorite_border</mat-icon>
+    <mat-icon *ngIf="(pingPong | async)">favorite</mat-icon>
   </mat-card-header>
   <mat-card-content>
     <mat-spinner *ngIf="(isBusy | async)"></mat-spinner>

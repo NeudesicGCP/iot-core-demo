@@ -3,14 +3,20 @@ import { Observable } from 'rxjs/Observable';
 import { TimerObservable } from 'rxjs/observable/TimerObservable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Subscription } from 'rxjs/Subscription';
+import 'rxjs/add/operator/combineLatest';
+import 'rxjs/add/operator/defaultIfEmpty';
+import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/takeWhile';
 
 import { AuthService } from '../auth/auth.service';
 import { StatusService } from './status.service';
 import { SensorsService } from './sensors.service';
+import { WindowService } from '../app.window.service';
 
 import * as Debug from 'debug';
 const debug = Debug('thingy:status.component');
+
+const UPDATE_TELEMETRY_SAMPLE_MS = 125;
 
 @Component({
   selector: 'app-status-component',
@@ -24,6 +30,12 @@ export class StatusComponent implements OnInit, OnDestroy {
   private locationSub: Subscription;
   private configSub: Subscription;
   private telemetrySub: Subscription;
+  private ua: string;
+  private pingPong_: BehaviorSubject<boolean>;
+
+  get pingPong(): Observable<boolean> {
+    return this.pingPong_.distinctUntilChanged();
+  }
 
   get isRegistered(): Observable<boolean> {
     return this.registered_.asObservable();
@@ -42,11 +54,14 @@ export class StatusComponent implements OnInit, OnDestroy {
 
   constructor(private statusService: StatusService,
     private authService: AuthService,
-    private sensorsService: SensorsService) {
+    private sensorsService: SensorsService,
+    private windowService: WindowService) {
     debug('Creating new StatusComponent instance');
     this.version_ = new BehaviorSubject(0);
     this.config_ = new BehaviorSubject<any>(null);
     this.registered_ = new BehaviorSubject(false);
+    this.pingPong_ = new BehaviorSubject(false);
+    this.ua = windowService.window.navigator.userAgent;
     this.authService.isRegistered.subscribe((registered) => {
       this.registered_.next(registered);
     });
@@ -87,18 +102,19 @@ export class StatusComponent implements OnInit, OnDestroy {
           locationError: err
         };
       });
-    this.telemetrySub = this.sensorsService.acceleration
-      .combineLatest(this.sensorsService.geolocation,
-      this.sensorsService.ua,
-      (acceleration, position, ua) => {
+    this.telemetrySub = this.sensorsService.geolocation.defaultIfEmpty()
+      .combineLatest(this.sensorsService.acceleration.defaultIfEmpty(),
+      (position, acceleration) => {
         return {
-          ua: ua,
+          ts: Date.now(),
+          ua: this.ua,
           position: position,
           acceleration: acceleration
         };
       })
-      .sampleTime(250)
+      .sampleTime(UPDATE_TELEMETRY_SAMPLE_MS)
       .subscribe((telemetry) => {
+        this.pingPong_.next(!this.pingPong_.getValue());
         this.statusService.telemetry(telemetry);
       });
     debug('onInit: exit');

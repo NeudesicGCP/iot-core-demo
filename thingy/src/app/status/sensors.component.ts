@@ -19,7 +19,6 @@ const debug = Debug('thingy:sensors.component');
 export class SensorsComponent implements OnInit, OnDestroy {
   private locationSub: Subscription;
   private accelerationSub: Subscription;
-  private telemetrySub: Subscription;
   private positionEnabled_: BehaviorSubject<boolean>;
   private haveAPosition_: BehaviorSubject<boolean>;
   private haveAnAcceleration_: BehaviorSubject<boolean>;
@@ -64,9 +63,6 @@ export class SensorsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     debug('ngOnDestroy: enter');
-    if (this.telemetrySub) {
-      this.telemetrySub.unsubscribe();
-    }
     if (this.locationSub) {
       this.locationSub.unsubscribe();
     }
