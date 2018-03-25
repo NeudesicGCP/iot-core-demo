@@ -102,8 +102,8 @@ export class StatusComponent implements OnInit, OnDestroy {
           locationError: err
         };
       });
-    this.telemetrySub = this.sensorsService.geolocation.defaultIfEmpty()
-      .combineLatest(this.sensorsService.acceleration.defaultIfEmpty(),
+    this.telemetrySub = this.sensorsService.geolocation
+      .combineLatest(this.sensorsService.acceleration,
       (position, acceleration) => {
         return {
           ts: Date.now(),
@@ -112,6 +112,7 @@ export class StatusComponent implements OnInit, OnDestroy {
           acceleration: acceleration
         };
       })
+      .takeWhile(() => this.registered_.value)
       .sampleTime(UPDATE_TELEMETRY_SAMPLE_MS)
       .subscribe((telemetry) => {
         this.pingPong_.next(!this.pingPong_.getValue());

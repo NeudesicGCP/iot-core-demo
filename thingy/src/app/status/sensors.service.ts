@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/operator/sampleTime';
+import 'rxjs/add/operator/startWith';
 
 import { WindowService } from '../app.window.service';
 import { Acceleration, buildAcceleration, Position, buildPosition } from './sensors.model';
@@ -56,6 +57,7 @@ export class SensorsService {
         observer.error('Geolocation is unsupported');
       }
     })
+      .startWith(null)
       .sampleTime(SENSOR_SAMPLE_TIME_MS);
   }
 
@@ -70,7 +72,7 @@ export class SensorsService {
       .map((motion) => {
         return buildAcceleration(motion);
       })
-      .filter((motion: any) => motion);
+      .startWith(null)
   }
 
   constructor(private windowService: WindowService) {

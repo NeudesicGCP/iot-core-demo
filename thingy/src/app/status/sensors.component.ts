@@ -43,6 +43,7 @@ export class SensorsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     debug('ngOnInit: enter');
     this.accelerationSub = this.sensorsService.acceleration
+      .filter((acceleration: any) => acceleration)
       .subscribe((acceleration) => {
         debug('acceleration: %o', acceleration);
         this.haveAnAcceleration_.next(true);
@@ -50,6 +51,7 @@ export class SensorsComponent implements OnInit, OnDestroy {
         this.haveAnAcceleration_.next(false);
       });
     this.locationSub = this.sensorsService.geolocation
+      .filter((position: any) => position)
       .subscribe((position) => {
         debug('position: %o', position);
         this.positionEnabled_.next(true);
