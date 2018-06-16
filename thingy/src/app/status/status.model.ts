@@ -20,5 +20,4 @@ export interface Telemetry {
   readonly ua: string;
   readonly position: Position;
   readonly acceleration: Acceleration;
-  readonly deviceId: string;
 }
