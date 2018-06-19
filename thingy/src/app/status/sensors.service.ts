@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/fromEvent';
-import 'rxjs/add/operator/sampleTime';
-import 'rxjs/add/operator/startWith';
+import { fromEvent, Observable } from 'rxjs';
+import { map, sampleTime, startWith } from 'rxjs/operators';
 
 import { WindowService } from '../app.window.service';
 import { Acceleration, buildAcceleration, Position, buildPosition } from './sensors.model';
@@ -57,8 +55,8 @@ export class SensorsService {
         observer.error('Geolocation is unsupported');
       }
     })
-      .startWith(null)
-      .sampleTime(SENSOR_SAMPLE_TIME_MS);
+      .pipe(startWith(null),
+        sampleTime(SENSOR_SAMPLE_TIME_MS));
   }
 
   get acceleration(): Observable<Acceleration> {
@@ -67,12 +65,12 @@ export class SensorsService {
       debug('get acceleration: window doesn\'t have addEventListener');
       return Observable.throw(SENSOR_ERROR_UNKNOWN);
     }
-    return Observable.fromEvent(this.window, 'devicemotion')
-      .sampleTime(SENSOR_SAMPLE_TIME_MS)
-      .map((motion) => {
-        return buildAcceleration(motion);
-      })
-      .startWith(null)
+    return fromEvent(this.window, 'devicemotion')
+      .pipe(sampleTime(SENSOR_SAMPLE_TIME_MS),
+        map((motion) => {
+          return buildAcceleration(motion);
+        }),
+        startWith(null));
   }
 
   constructor(private windowService: WindowService) {

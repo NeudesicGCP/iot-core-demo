@@ -1,11 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Subscription } from 'rxjs/Subscription';
-import 'rxjs/add/observable/interval';
-import 'rxjs/add/operator/sampleTime';
-import 'rxjs/add/operator/map';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { filter, map, sampleTime } from 'rxjs/operators';
 import { Buffer } from 'buffer';
 
 import { AuthService } from '../auth/auth.service';
@@ -40,8 +36,9 @@ export class StatusService {
       locationError: ''
     };
     this.state_ = new BehaviorSubject<State>(state);
-    this.state_.sampleTime(UPDATE_SAMPLE_TIME_MS)
-      .filter(sample => this.isRegistered && sample != null)
+    this.state_
+      .pipe(sampleTime(UPDATE_SAMPLE_TIME_MS),
+        filter(sample => this.isRegistered && sample != null))
       .subscribe((sample) => {
         const path = this.authService.currentPath;
         const binary = Buffer.from(JSON.stringify(state)).toString('base64');
@@ -62,7 +59,7 @@ export class StatusService {
     debug('config: enter, version = %d', version);
     const path = this.authService.currentPath;
     return this.httpClient.get<IoTConfig>(`${path}/config?local_version=${version}`)
-      .map((resp) => {
+      .pipe(map((resp) => {
         if (version === resp.version) {
           debug('config: no changes from version %d', version);
           return null;
@@ -80,7 +77,7 @@ export class StatusService {
           version: resp.version,
           config: config
         };
-      });
+      }));
   }
 
   telemetry(telemetry: Telemetry): void {

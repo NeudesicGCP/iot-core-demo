@@ -1,10 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Subscription } from 'rxjs/Subscription';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/sampleTime';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { distinctUntilChanged, filter } from 'rxjs/operators';
 
 import { SensorsService } from './sensors.service';
 
@@ -24,13 +20,13 @@ export class SensorsComponent implements OnInit, OnDestroy {
   private haveAnAcceleration_: BehaviorSubject<boolean>;
 
   get positionEnabled(): Observable<boolean> {
-    return this.positionEnabled_.distinctUntilChanged();
+    return this.positionEnabled_.pipe(distinctUntilChanged());
   }
   get haveAPosition(): Observable<boolean> {
-    return this.haveAPosition_.distinctUntilChanged();
+    return this.haveAPosition_.pipe(distinctUntilChanged());
   }
   get haveAnAcceleration(): Observable<boolean> {
-    return this.haveAnAcceleration_.distinctUntilChanged();
+    return this.haveAnAcceleration_.pipe(distinctUntilChanged());
   }
 
   constructor(private sensorsService: SensorsService) {
@@ -43,7 +39,7 @@ export class SensorsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     debug('ngOnInit: enter');
     this.accelerationSub = this.sensorsService.acceleration
-      .filter((acceleration: any) => acceleration)
+      .pipe(filter((acceleration: any) => acceleration))
       .subscribe((acceleration) => {
         debug('acceleration: %o', acceleration);
         this.haveAnAcceleration_.next(true);
@@ -51,7 +47,7 @@ export class SensorsComponent implements OnInit, OnDestroy {
         this.haveAnAcceleration_.next(false);
       });
     this.locationSub = this.sensorsService.geolocation
-      .filter((position: any) => position)
+      .pipe(filter((position: any) => position))
       .subscribe((position) => {
         debug('position: %o', position);
         this.positionEnabled_.next(true);
