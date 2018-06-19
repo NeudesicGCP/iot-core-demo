@@ -9,13 +9,13 @@ skip_files:
   - ^(?!dist)
 
 handlers:
-  - url: /((?:inline|main|polyfills|styles|vendor)(?:\.[a-z0-9]+)?\.bundle\.js)
+  - url: /((?:inline|main|polyfills|runtime|styles|vendor)(?:\.[a-z0-9]+)?(?:\.bundle)?\.js(?:\.map)?)
     secure: always
     redirect_http_response_code: 301
     static_files: dist/\1
     upload: dist/.*
 
-  - url: /(styles(?:\.[a-z0-9]+)?\.bundle.css)
+  - url: /(styles(?:\.[a-z0-9]+)?(?:\.bundle)?\.css)
     secure: always
     redirect_http_response_code: 301
     static_files: dist/\1
