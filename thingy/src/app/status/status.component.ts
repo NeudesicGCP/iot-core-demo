@@ -68,10 +68,11 @@ export class StatusComponent implements OnInit, OnDestroy {
     this.configSub = timer(0, 5000)
       .pipe(takeWhile(() => this.registered_.value))
       .subscribe(() => {
-        this.statusService.config()
+        this.statusService.config(this.version_.value)
           .subscribe((config) => {
-            this.version_.next(config.version);
-            if (config.config != null) {
+            debug('updated config: %o', config);
+            if (config != null) {
+              this.version_.next(config.version);
               this.config_.next(config.config);
             }
           });

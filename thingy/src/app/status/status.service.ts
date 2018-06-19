@@ -60,21 +60,22 @@ export class StatusService {
     const path = this.authService.currentPath;
     return this.httpClient.get<IoTConfig>(`${path}/config?local_version=${version}`)
       .pipe(map((resp) => {
-        if (version === resp.version) {
+        const newVersion = Number(resp.version);
+        if (version === newVersion) {
           debug('config: no changes from version %d', version);
           return null;
         }
         if (resp.binaryData === undefined || resp.binaryData === null || resp.binaryData === '') {
-          debug('config: new version, empty binary data');
+          debug('config: new version, version = %d, empty binary data', newVersion);
           return {
-            version: resp.version,
+            version: newVersion,
             config: {}
           };
         }
         const config = JSON.parse(Buffer.from(resp.binaryData, 'base64'));
-        debug('config: new version, config = %o', config);
+        debug('config: new version, version = %d, config = %o', newVersion, config);
         return {
-          version: resp.version,
+          version: newVersion,
           config: config
         };
       }));
