@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { combineLatest, timer, BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { distinctUntilChanged, sampleTime, takeWhile } from 'rxjs/operators';
+import { distinctUntilChanged, filter, sampleTime } from 'rxjs/operators';
 
 import { AuthService } from '../auth/auth.service';
 import { StatusService } from './status.service';
@@ -66,7 +66,7 @@ export class StatusComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     debug('onInit: enter');
     this.configSub = timer(0, 5000)
-      .pipe(takeWhile(() => this.registered_.value))
+      .pipe(filter(() => this.registered_.value))
       .subscribe(() => {
         this.statusService.config(this.version_.value)
           .subscribe((config) => {
@@ -78,7 +78,7 @@ export class StatusComponent implements OnInit, OnDestroy {
           });
       });
     this.locationSub = this.sensorsService.geolocation
-      .pipe(takeWhile(() => this.registered_.value))
+      .pipe(filter(() => this.registered_.value))
       .subscribe((location) => {
         const state = this.statusService.state;
         if (state.locationEnabled && state.locationError === '') {
@@ -99,6 +99,7 @@ export class StatusComponent implements OnInit, OnDestroy {
       });
     this.telemetrySub = combineLatest(this.sensorsService.geolocation, this.sensorsService.acceleration,
       (position, acceleration) => {
+        debug('combining telemetry: position = %o, acceleration = %o', position, acceleration);
         return {
           ts: Date.now(),
           ua: this.ua,
@@ -106,7 +107,7 @@ export class StatusComponent implements OnInit, OnDestroy {
           acceleration: acceleration
         };
       })
-      .pipe(takeWhile(() => this.registered_.value),
+      .pipe(filter(() => this.registered_.value),
         sampleTime(UPDATE_TELEMETRY_SAMPLE_MS))
       .subscribe((telemetry) => {
         this.pingPong_.next(!this.pingPong_.getValue());
