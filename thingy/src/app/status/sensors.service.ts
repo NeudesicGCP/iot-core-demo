@@ -66,11 +66,13 @@ export class SensorsService {
       return Observable.throw(SENSOR_ERROR_UNKNOWN);
     }
     return fromEvent(this.window, 'devicemotion')
-      .pipe(sampleTime(SENSOR_SAMPLE_TIME_MS),
+      .pipe(
         map((motion) => {
+          debug('motion = %o', motion);
           return buildAcceleration(motion);
         }),
-        startWith(null));
+        startWith(null),
+        sampleTime(SENSOR_SAMPLE_TIME_MS));
   }
 
   constructor(private windowService: WindowService) {
